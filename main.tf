@@ -2,24 +2,24 @@ resource "proxmox_vm_qemu" "k8smaster" {
   count = 1
   name = "k8smaster" 
   desc = "k8s master host"
-  vmid = "10${count.index}"
+  vmid = "10${count.index+2}"
   target_node = "proxmox"
 
   agent = 1
 
-  clone = "ubuntu-template"
+  clone = "template-ubuntu"
   os_type = "cloud-init"
   cores = 2
   sockets = 1
-  cpu = "host"
+
   memory = 4096
-  scsihw = "virtio-scsi-pci"
+  scsihw = "virtio-scsi-single"
   bootdisk = "scsi0"
   onboot = true
 
   disk {
     slot = 0
-    size = "20G"
+    size = "50G"
     type = "scsi"
     storage = "local-lvm"
     iothread = 1
@@ -35,35 +35,34 @@ resource "proxmox_vm_qemu" "k8smaster" {
     ]
   }
 
-  ipconfig0 = "ip=192.168.5.2${count.index}/24,gw=192.168.5.1"
-  searchdomain = "192.168.5.1"
-  nameserver = "192.168.5.1"
+  ipconfig0 = "ip=192.168.50.2${count.index}/24,gw=192.168.50.1"
+  searchdomain = "192.168.50.1"
+  nameserver = "192.168.50.1"
   sshkeys = file("./secrets/id_rsa.pub")
-
 }
 
 resource "proxmox_vm_qemu" "k8sworker" {
-  count = 1
-  name = "k8sworker" 
+  count = 2
+  name = "k8sworker${count.index+1}" 
   desc = "k8s worker host"
-  vmid = "10${count.index+1}"
+  vmid = "10${count.index+3}"
   target_node = "proxmox"
 
   agent = 1
 
-  clone = "ubuntu-template"
+  clone = "template-ubuntu"
   os_type = "cloud-init"
   cores = 2
   sockets = 1
-  cpu = "host"
+  
   memory = 8192
-  scsihw = "virtio-scsi-pci"
+  scsihw = "virtio-scsi-single"
   bootdisk = "scsi0"
   onboot = true
 
   disk {
     slot = 0
-    size = "20G"
+    size = "50G"
     type = "scsi"
     storage = "local-lvm"
     iothread = 1
@@ -79,9 +78,8 @@ resource "proxmox_vm_qemu" "k8sworker" {
     ]
   }
 
-  ipconfig0 = "ip=192.168.5.2${count.index+1}/24,gw=192.168.5.1"
-  searchdomain = "192.168.5.1"
-  nameserver = "192.168.5.1"
+  ipconfig0 = "ip=192.168.50.2${count.index+1}/24,gw=192.168.50.1"
+  searchdomain = "192.168.50.1"
+  nameserver = "192.168.50.1"
   sshkeys = file("./secrets/id_rsa.pub")
-
 }
