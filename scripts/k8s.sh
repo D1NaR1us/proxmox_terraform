@@ -1,8 +1,8 @@
 #!/bin/bash
 
 myhosts() {
-echo "192.168.50.20 k8smaster k8smaster.home.lab" >> /etc/hosts
-echo "192.168.50.21 k8sworker1 k8sworker1.home.lab" >> /etc/hosts
+echo "192.168.50.20 k8smaster k8smaster.home.lab" >> /etc/cloud/templates/hosts.debian.tmpl
+echo "192.168.50.21 k8sworker1 k8sworker1.home.lab" >> /etc/cloud/templates/hosts.debian.tmpl
 }
 
 #disable swap
